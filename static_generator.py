@@ -31,18 +31,19 @@ def generate_static_site():
     (static_dir / "about.html").write_text(about_response.text)
     
     # Create posts directory
-    posts_dir = static_dir / "post_page"
+    posts_dir = static_dir / "post"
     posts_dir.mkdir(exist_ok=True)
     
     # Generate HTML for each blog post
     for post_file in Path("content").glob("*.md"):
         slug = post_file.stem
-        post_response = client.get(f"/post_page?slug={slug}")
+        # Use path format instead of query parameters
+        post_response = client.get(f"/post/{slug}")
         post_dir = posts_dir / slug
         post_dir.mkdir(exist_ok=True)
         (post_dir / "index.html").write_text(post_response.text)
-    
-    print(f"Static site generated in {static_dir}")
+        
+        print(f"Static site generated in {static_dir}")
 
 if __name__ == "__main__":
     generate_static_site()
