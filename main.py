@@ -42,10 +42,11 @@ def index():
         "My FastHTML Blog",
         Div(*(
             Article(
-                H2(A(post["title"], href=post_page.to(slug=post["slug"]))),
+                # Change this line to use path format instead of query parameters
+                H2(A(post["title"], href=f"/post/{post['slug']}")),
                 P(f"Published: {post['date'].strftime('%B %d, %Y')}"),
                 P(post["summary"]),
-                A("Read more →", href=post_page.to(slug=post["slug"]), cls="read-more"),
+                A("Read more →", href=f"/post/{post['slug']}", cls="read-more"),
                 cls="post-preview"
             ) for post in posts
         ), cls="post-list")
