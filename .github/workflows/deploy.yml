@@ -5,11 +5,17 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write # This is important - grants write access to repo contents
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -19,13 +25,22 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install python-fasthtml python-frontmatter markdown
+          pip install fasthtml python-frontmatter markdown pyyaml
           
       - name: Generate static site
         run: |
+          mkdir -p content  # Ensure content directory exists
+          mkdir -p _static  # Ensure _static directory exists
           python static_generator.py
+          
+      - name: Add .nojekyll file
+        run: |
+          touch _static/.nojekyll
           
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: _static
+          branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          clean: true
