@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install fasthtml frontmatter markdown
+          pip install python-fasthtml frontmatter markdown
           
       - name: Generate static site
         run: |
